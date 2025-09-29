@@ -16,7 +16,11 @@ class CalculatorTest {
     @Test
     void integerSubtraction() {
         Calculator calculator = new Calculator();
-        int result = calculator.integerSubtraction(33, 1);
-        assertEquals(32, result);
+        int minuend = 33;
+        int subtrahend = 1;
+        int expectedResult = 32;
+        int actualResult = calculator.integerSubtraction(minuend, subtrahend);
+        assertEquals(expectedResult, actualResult,
+                () -> minuend + "-" + subtrahend + " did not produce " + expectedResult);
     }
 }
