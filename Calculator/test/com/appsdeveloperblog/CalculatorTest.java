@@ -52,14 +52,26 @@ class CalculatorTest {
         assertEquals(expectedResult, actualResult, "4/2 did not produce 2");
     }
 
-    @Disabled("TODO: Still need to work on it")
+    // @Disabled("TODO: Still need to work on it")
     @DisplayName("Division by zero")
     @Test
     void testIntegerDivision_WhenDividendIsDividedByZero_ShouldThrowArithmeticException() {
 
         System.out.println("Running Division by zero");
+        // Arrange
+        int dividend = 4;
+        int divisor = 0;
+        String expectedExceptionMessage = "/ by zero";
 
-        fail("Not implemented yet.");
+        // Act & Assert
+        ArithmeticException actualException = assertThrows(ArithmeticException.class, () -> {
+            // Act
+            calculator.integerDivision(dividend, divisor);
+        }, "Division by zero should have thrown an ArithmeticException");
+
+        // Assert
+        assertEquals(expectedExceptionMessage, actualException.getMessage(),
+                "Unexpected exception message");
     }
 
     @DisplayName("Test 33-1=32")
