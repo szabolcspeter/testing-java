@@ -3,6 +3,8 @@ package com.appsdeveloperblog;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
@@ -81,7 +83,17 @@ class CalculatorTest {
 
     @DisplayName("Test integer subtraction [minuend, subtrahend, expectedResult]")
     @ParameterizedTest
-    @MethodSource()
+    // @MethodSource()
+    @CsvSource( {
+            "33, 1, 32",
+            "24, 1, 23",
+            "54, 1, 53"
+    } )
+//    @CsvSource({
+//            "apple, orange",
+//            "apple, ''",
+//            "apple,"
+//    })
     void integerSubtraction(int minuend, int subtrahend, int expectedResult) {
 
         System.out.println("Running Test " + minuend + " - " + subtrahend + " = " + expectedResult);
@@ -91,12 +103,12 @@ class CalculatorTest {
                 () -> minuend + "-" + subtrahend + " did not produce " + expectedResult);
     }
 
-    private static Stream<Arguments> integerSubtraction() {
-
-        return Stream.of(
-                Arguments.of(33, 1, 32),
-                Arguments.of(54, 1, 53),
-                Arguments.of(24, 1, 23)
-        );
-    }
+//    private static Stream<Arguments> integerSubtraction() {
+//
+//        return Stream.of(
+//                Arguments.of(33, 1, 32),
+//                Arguments.of(54, 1, 53),
+//                Arguments.of(24, 1, 23)
+//        );
+//    }
 }
