@@ -83,17 +83,7 @@ class CalculatorTest {
 
     @DisplayName("Test integer subtraction [minuend, subtrahend, expectedResult]")
     @ParameterizedTest
-    // @MethodSource()
-    @CsvSource( {
-            "33, 1, 32",
-            "24, 1, 23",
-            "54, 1, 53"
-    } )
-//    @CsvSource({
-//            "apple, orange",
-//            "apple, ''",
-//            "apple,"
-//    })
+    @CsvFileSource(resources = "/integerSubtraction.csv")
     void integerSubtraction(int minuend, int subtrahend, int expectedResult) {
 
         System.out.println("Running Test " + minuend + " - " + subtrahend + " = " + expectedResult);
@@ -102,13 +92,4 @@ class CalculatorTest {
         assertEquals(expectedResult, actualResult,
                 () -> minuend + "-" + subtrahend + " did not produce " + expectedResult);
     }
-
-//    private static Stream<Arguments> integerSubtraction() {
-//
-//        return Stream.of(
-//                Arguments.of(33, 1, 32),
-//                Arguments.of(54, 1, 53),
-//                Arguments.of(24, 1, 23)
-//        );
-//    }
 }
