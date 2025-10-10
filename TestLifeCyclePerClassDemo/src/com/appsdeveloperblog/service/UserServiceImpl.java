@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String createUser(Map userDetails) {
+    public String createUser(Map<String, String> userDetails) {
         String userId = UUID.randomUUID().toString();
         userDetails.put("userId", userId);
         usersDatabase.save(userId, userDetails);
@@ -22,8 +22,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map updateUser(String userId, Map userDetails) {
-        Map existingUser = usersDatabase.find(userId);
+    public Map<String, String> updateUser(String userId, Map<String, String> userDetails) {
+        Map<String, String> existingUser = usersDatabase.find(userId);
         if(existingUser == null) throw new IllegalArgumentException("User not found");
 
         existingUser.put("firstName", userDetails.get("firstName"));
@@ -33,13 +33,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map getUserDetails(String userId) {
+    public Map<String, String> getUserDetails(String userId) {
         return usersDatabase.find(userId);
     }
 
     @Override
     public void deleteUser(String userId) {
-        Map existingUser = usersDatabase.find(userId);
+        Map<String, String> existingUser = usersDatabase.find(userId);
         if(existingUser == null) throw new IllegalArgumentException("User not found");
 
         usersDatabase.delete(userId);

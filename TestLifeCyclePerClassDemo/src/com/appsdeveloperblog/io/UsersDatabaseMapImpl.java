@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class UsersDatabaseMapImpl implements UsersDatabase {
 
-    Map<String, Map> users;
+    Map<String, Map<String, String>> users;
 
     @Override
     public void init() {
@@ -18,18 +18,18 @@ public class UsersDatabaseMapImpl implements UsersDatabase {
     }
 
     @Override
-    public Map save(String userId, Map userDetails) {
+    public Map<String, String> save(String userId, Map<String, String> userDetails) {
         return users.put(userId, userDetails);
     }
 
     @Override
-    public Map update(String userId, Map user) {
+    public Map<String, String> update(String userId, Map<String, String> user) {
         users.put(userId, user);
         return users.get(userId);
     }
 
     @Override
-    public Map find(String userId) {
+    public Map<String, String> find(String userId) {
         return users.get(userId);
     }
 
