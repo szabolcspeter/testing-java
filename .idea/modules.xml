@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Calculator/Calculator.iml" filepath="$PROJECT_DIR$/Calculator/Calculator.iml" />
       <module fileurl="file://$PROJECT_DIR$/ClassesOrderDemo/ClassesOrderDemo.iml" filepath="$PROJECT_DIR$/ClassesOrderDemo/ClassesOrderDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TestLifeCyclePerClassDemo/TestLifeCyclePerClassDemo.iml" filepath="$PROJECT_DIR$/TestLifeCyclePerClassDemo/TestLifeCyclePerClassDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/TestingJava.iml" filepath="$PROJECT_DIR$/TestingJava.iml" />
     </modules>
   </component>
