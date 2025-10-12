@@ -2,6 +2,8 @@ package com.appsdeveloperblog.estore.service;
 
 import com.appsdeveloperblog.estore.model.User;
 
+import java.util.UUID;
+
 public class UserServiceImpl implements UserService {
 
     @Override
@@ -12,6 +14,6 @@ public class UserServiceImpl implements UserService {
             String password,
             String repeatPassword
     ) {
-        return new User(firstName, lastName, email);
+        return new User(firstName, lastName, email, UUID.randomUUID().toString());
     }
 }
