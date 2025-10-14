@@ -1,10 +1,17 @@
 package com.appsdeveloperblog.estore.service;
 
+import com.appsdeveloperblog.estore.data.UsersRepository;
 import com.appsdeveloperblog.estore.model.User;
 
 import java.util.UUID;
 
 public class UserServiceImpl implements UserService {
+
+    UsersRepository usersRepository;
+
+    public UserServiceImpl(UsersRepository usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 
     @Override
     public User createUser(
@@ -18,6 +25,12 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User's first name is empty");
         }
 
-        return new User(firstName, lastName, email, UUID.randomUUID().toString());
+        User user = new User(firstName, lastName, email, UUID.randomUUID().toString());
+        boolean isUserCreated = usersRepository.save(user);
+
+        if (!isUserCreated) {
+            throw new UserServiceException("Could not create user");
+        }
+        return user;
     }
 }
