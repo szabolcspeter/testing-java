@@ -12,8 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -72,7 +71,7 @@ public class UserServiceTest {
         String expectedExceptionMessage = "User's first name is empty";
 
         // Act & Assert
-        IllegalArgumentException thrown = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             userService.createUser(
                     firstName,
                     lastName,
@@ -84,5 +83,25 @@ public class UserServiceTest {
         // Assert
         assertEquals(expectedExceptionMessage, thrown.getMessage(),
                 "Exception error message is not correct");
+    }
+
+    @DisplayName("If save() method causes RuntimeException, a UserServiceException is thrown")
+    @Test
+    void testCreateUser_whenSaveMethodThrowsException_thenThrowsUserServiceException() {
+
+        // Arrange
+        when(usersRepository.save(any(User.class))).thenThrow(RuntimeException.class);
+
+        // Act & Assert
+        assertThrows(UserServiceException.class, () -> {
+            userService.createUser(
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    repeatPassword);
+        }, "Should have thrown UserServiceException instead");
+
+        // Assert
     }
 }
