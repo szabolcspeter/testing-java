@@ -23,7 +23,7 @@ public class UserServiceTest {
     @Mock
     UsersRepository usersRepository;
     @Mock
-    EmailVerificationService emailVerificationService;
+    EmailVerificationServiceImpl emailVerificationService;
     String firstName;
     String lastName;
     String email;
@@ -126,6 +126,30 @@ public class UserServiceTest {
                     password,
                     repeatPassword);
         }, "Should have thrown UserServiceException instead");
+
+        // Assert
+        verify(emailVerificationService, times(1))
+                .scheduleEmailConfirmation(any(User.class));
+    }
+
+    @DisplayName("Schedule Email Confirmation is executed")
+    @Test
+    void testCreateUser_whenUserCreated_schedulesEmailConfirmation() {
+
+        // Arrange
+        when(usersRepository.save(any(User.class))).thenReturn(true);
+
+        doCallRealMethod()
+                .when(emailVerificationService)
+                .scheduleEmailConfirmation(any(User.class));
+
+        // Act
+        userService.createUser(
+                firstName,
+                lastName,
+                email,
+                password,
+                repeatPassword);
 
         // Assert
         verify(emailVerificationService, times(1))
