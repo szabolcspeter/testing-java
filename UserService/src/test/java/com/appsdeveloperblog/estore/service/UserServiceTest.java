@@ -117,10 +117,6 @@ public class UserServiceTest {
                 .when(emailVerificationService)
                 .scheduleEmailConfirmation(any(User.class));
 
-        doNothing()
-                .when(emailVerificationService)
-                .scheduleEmailConfirmation(any(User.class));
-
         // Act & Assert
         assertThrows(UserServiceException.class, () -> {
             userService.createUser(
