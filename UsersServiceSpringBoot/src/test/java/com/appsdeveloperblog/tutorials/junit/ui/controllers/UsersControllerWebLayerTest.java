@@ -4,6 +4,7 @@ import com.appsdeveloperblog.tutorials.junit.service.UsersService;
 import com.appsdeveloperblog.tutorials.junit.shared.UserDto;
 import com.appsdeveloperblog.tutorials.junit.ui.request.UserDetailsRequestModel;
 import com.appsdeveloperblog.tutorials.junit.ui.response.UserRest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -72,5 +74,30 @@ public class UsersControllerWebLayerTest {
                 createdUser.getEmail(), "The returned user email is incorrect");
 
         Assertions.assertFalse(createdUser.getUserId().isEmpty(), "userId should not be empty");
+    }
+
+    @DisplayName("First name is not empty")
+    @Test
+    void testCreateUser_whenFirstNameIsNotProvided_returns400StatusCode() throws Exception {
+
+        // Arrange
+        UserDetailsRequestModel userDetailsRequestModel = new UserDetailsRequestModel();
+        userDetailsRequestModel.setFirstName("");
+        userDetailsRequestModel.setLastName("Peter");
+        userDetailsRequestModel.setEmail("email@test.com");
+        userDetailsRequestModel.setPassword("12345678");
+        userDetailsRequestModel.setRepeatPassword("12345678");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(userDetailsRequestModel));
+
+        // Act
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        // Arrange
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), mvcResult.getResponse().getStatus(),
+                "Incorrect HTTP Status Code returned");
     }
 }
