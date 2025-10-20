@@ -42,7 +42,7 @@ public class UsersControllerWebLayerTest {
         UserDetailsRequestModel userDetailsRequestModel = new UserDetailsRequestModel();
         userDetailsRequestModel.setFirstName("Szabi");
         userDetailsRequestModel.setLastName("Peter");
-        userDetailsRequestModel.setEmail("email");
+        userDetailsRequestModel.setEmail("email@test.com");
         userDetailsRequestModel.setPassword("12345678");
         userDetailsRequestModel.setRepeatPassword("12345678");
 

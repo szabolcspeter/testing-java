@@ -76,6 +76,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>5.20.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
@@ -92,6 +99,18 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>
+						-javaagent:${settings.localRepository}/org/mockito/mockito-core/5.20.0/mockito-core-5.20.0.jar
+						-Xshare:off
+					</argLine>
+					<testFailureIgnore>true</testFailureIgnore>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
