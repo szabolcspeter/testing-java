@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //@TestPropertySource(locations = "/application-test.properties",
@@ -68,5 +70,26 @@ public class UsersControllerIntegrationTest {
                 "Returned user's email seems to be incorrect");
         Assertions.assertFalse(createdUserDetails.getUserId().trim().isEmpty(),
                 "User id should not be empty");
+    }
+
+    @Test
+    @DisplayName("GET /users requires JWT")
+    void testGetUsers_whenMissingJWT_returns403() {
+        // Arrange
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", "application/json");
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Act
+        ResponseEntity<List<UserRest>> response = testRestTemplate.exchange("/users",
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<>() {
+                });
+
+        // Assert
+        Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(),
+                "HTTP Status code 403 Forbidden should have been returned");
     }
 }
