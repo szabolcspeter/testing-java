@@ -1,7 +1,8 @@
 package com.appsdeveloperblog.tutorials.junit.io;
 
-import com.appsdeveloperblog.tutorials.junit.ui.request.UserDetailsRequestModel;
+import jakarta.persistence.PersistenceException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,16 +16,20 @@ public class UserEntityIntegrationTest {
     @Autowired
     private TestEntityManager testEntityManager;
 
-    @Test
-    void testUserEntity_whenValidUserDetailsProvided_shouldReturnStoredUserDetails() {
+    private UserEntity userEntity;
 
-        // Arrange
-        UserEntity userEntity = new UserEntity();
+    @BeforeEach
+    void setup() {
+        userEntity = new UserEntity();
         userEntity.setUserId(UUID.randomUUID().toString());
         userEntity.setFirstName("Szabi");
         userEntity.setLastName("Peter");
         userEntity.setEmail("email@test.com");
         userEntity.setEncryptedPassword("12345678");
+    }
+
+    @Test
+    void testUserEntity_whenValidUserDetailsProvided_shouldReturnStoredUserDetails() {
 
         // Act
         UserEntity dbUserEntity = testEntityManager.persistAndFlush(userEntity);
@@ -36,5 +41,17 @@ public class UserEntityIntegrationTest {
         Assertions.assertEquals(userEntity.getLastName(), dbUserEntity.getLastName());
         Assertions.assertEquals(userEntity.getEmail(), dbUserEntity.getEmail());
         Assertions.assertEquals(userEntity.getEncryptedPassword(), dbUserEntity.getEncryptedPassword());
+    }
+
+    @Test
+    void testUserEntity_whenFirstNameIsTooLong_shouldThrowException() {
+
+        // Arrange
+        userEntity.setFirstName("123456789012345678901234567890123456789012345678901234567890");
+
+        // Act & Assert
+        Assertions.assertThrows(PersistenceException.class, () -> {
+            testEntityManager.persistAndFlush(userEntity);
+        }, "Was expecting a PersistenceException to be thrown");
     }
 }
