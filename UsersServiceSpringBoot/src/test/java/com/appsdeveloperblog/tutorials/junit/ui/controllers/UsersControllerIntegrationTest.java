@@ -21,6 +21,7 @@ import java.util.List;
 //    properties = {"server.port=8081"})
 //@TestPropertySource(locations = "/application-test.properties")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UsersControllerIntegrationTest {
 
     @Value("${server.port}")
@@ -31,6 +32,8 @@ public class UsersControllerIntegrationTest {
 
     @Autowired
     private TestRestTemplate testRestTemplate;
+
+    private String authorizationToken;
 
     @Test
     @DisplayName("User can be created")
@@ -112,19 +115,48 @@ public class UsersControllerIntegrationTest {
                 request,
                 null);
 
+        authorizationToken = response.getHeaders()
+                .getValuesAsList(SecurityConstants.HEADER_STRING)
+                        .get(0);
+
         // Assert
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(),
                 "HTTP Status code should be OK");
 
-        Assertions.assertNotNull(response.getHeaders()
-                // constant "SecurityConstants.HEADER_STRING" comes from application source: SecurityConstants.java
-                .getValuesAsList(SecurityConstants.HEADER_STRING)
-                .get(0),
+        Assertions.assertNotNull(authorizationToken,
                 "Response should contain Authorization header with JWT");
 
         Assertions.assertNotNull(response.getHeaders()
                         .getValuesAsList("UserID")
                         .get(0),
                 "Response should contain UserID in a response header");
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("GET /users works")
+    void testGetUsers_whenValidJWTProvided_returnsUsers() {
+
+        // Arrange
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(authorizationToken);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        // Act
+        ResponseEntity<List<UserRest>> response = testRestTemplate.exchange("/users",
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<>() {
+                });
+
+        // Assert
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(),
+                "HTTP Status code should be 200");
+
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals(1, response.getBody().size(),
+                "There should be exactly 1 user in the list");
     }
 }
