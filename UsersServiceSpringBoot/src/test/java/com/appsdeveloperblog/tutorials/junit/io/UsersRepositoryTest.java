@@ -1,6 +1,7 @@
 package com.appsdeveloperblog.tutorials.junit.io;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,24 +18,52 @@ public class UsersRepositoryTest {
     @Autowired
     UsersRepository usersRepository;
 
+    private final String userId1 = UUID.randomUUID().toString();
+    private final String userId2 = UUID.randomUUID().toString();
+    private final String email1 = "test@test.com";
+    private final String email2 = "test2@test.com";
+
+    @BeforeEach
+    void setup() {
+        UserEntity user1 = new UserEntity();
+        user1.setUserId(userId1);
+        user1.setFirstName("Szabi");
+        user1.setLastName("Peter");
+        user1.setEmail(email1);
+        user1.setEncryptedPassword("12345678");
+        testEntityManager.persistAndFlush(user1);
+
+        UserEntity user2 = new UserEntity();
+        user2.setUserId(userId2);
+        user2.setFirstName("John");
+        user2.setLastName("Sears");
+        user2.setEmail(email2);
+        user2.setEncryptedPassword("abcdefg1");
+        testEntityManager.persistAndFlush(user2);
+    }
+
     @Test
     void testFindByEmail_whenGivenCorrectEmail_returnsUserEntity() {
 
-        // Arrange
-        UserEntity user = new UserEntity();
-        user.setUserId(UUID.randomUUID().toString());
-        user.setFirstName("Szabi");
-        user.setLastName("Peter");
-        user.setEmail("email@test.com");
-        user.setEncryptedPassword("12345678");
-
-        testEntityManager.persistAndFlush(user);
-
         // Act
-        UserEntity dbUser = usersRepository.findByEmail(user.getEmail());
+        UserEntity dbUser = usersRepository.findByEmail(email1);
 
         // Assert
-        Assertions.assertEquals(user.getEmail(), dbUser.getEmail(),
+        Assertions.assertEquals(email1, dbUser.getEmail(),
                 "Returned email address does not match the expected value");
+    }
+
+    @Test
+    void testFindByUserId_whenGivenCorrectUserId_returnsUserEntity() {
+
+        // Act
+        UserEntity dbUser = usersRepository.findByUserId(userId2);
+
+        // Assert
+        Assertions.assertNotNull(dbUser,
+                "UserEntity object should not be null");
+
+        Assertions.assertEquals(userId2, dbUser.getUserId(),
+                "Returned userId does not match the expected value");
     }
 }
