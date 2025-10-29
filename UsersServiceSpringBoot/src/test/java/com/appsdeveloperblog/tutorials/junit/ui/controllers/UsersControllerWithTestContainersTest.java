@@ -31,7 +31,7 @@ public class UsersControllerWithTestContainersTest {
 
     private String authorizationToken;
 
-    @Container
+//    @Container
     @ServiceConnection
     private static MySQLContainer mySQLContainer = new MySQLContainer("mysql:8.4.0");
 //            .withDatabaseName("photo_app")
@@ -45,6 +45,10 @@ public class UsersControllerWithTestContainersTest {
 //        registry.add("spring.datasource.username", mySQLContainer::getUsername);
 //        registry.add("spring.datasource.password", mySQLContainer::getPassword);
 //    }
+
+    static {
+        mySQLContainer.start();
+    }
 
     @Test
     @DisplayName("The MySQL container is created and is running")
