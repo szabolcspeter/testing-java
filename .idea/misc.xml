@@ -7,6 +7,7 @@
         <option value="$PROJECT_DIR$/CalculatorMavenProject/pom.xml" />
         <option value="$PROJECT_DIR$/UserService/pom.xml" />
         <option value="$PROJECT_DIR$/UsersServiceSpringBoot/pom.xml" />
+        <option value="$PROJECT_DIR$/UsersServiceRESTAssured/pom.xml" />
       </list>
     </option>
   </component>
