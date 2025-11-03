@@ -28,5 +28,14 @@ public class UsersControllerWithTestContainerITest {
         assertTrue(mysqlContainer.isRunning());
     }
 
+    @Order(2)
+    @Test
+    void testCreateUser_whenValidDetailsProvided_returnsCreatedUser() {
 
+        // Arrange
+
+        // Act
+
+        // Assert
+    }
 }
