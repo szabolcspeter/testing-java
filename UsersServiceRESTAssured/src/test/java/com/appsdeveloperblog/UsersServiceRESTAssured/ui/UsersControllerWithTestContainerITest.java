@@ -9,6 +9,7 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -35,7 +36,10 @@ public class UsersControllerWithTestContainerITest {
         // Arrange
 
         // Act
-
+        // *** It uses Fluent API ***
+        given() // setup HTTP details
+        .when() // used to specify HTTP method and API endpoint that we want to call
+        .then(); // we verify HTTP response
         // Assert
     }
 }
