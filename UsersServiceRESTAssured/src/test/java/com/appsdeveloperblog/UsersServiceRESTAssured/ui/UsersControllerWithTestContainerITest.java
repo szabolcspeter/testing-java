@@ -16,6 +16,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -58,21 +60,17 @@ public class UsersControllerWithTestContainerITest {
 
         // Act
         // *** It uses Fluent API ***
-        Response response = given() // setup HTTP details
+        given() // setup HTTP details
                 .contentType(ContentType.JSON) // longer syntax  .header("Content-Type", "application/json")
                 .accept(ContentType.JSON) // longer syntax .header("Accept", "application/json")
                 .body(newUser)
         .when() // used to specify HTTP method and API endpoint that we want to call
                 .post("/users")
         .then() // we verify HTTP response
-                .extract()
-                .response();
-
-        // Assert
-        assertEquals(201, response.statusCode());
-        assertEquals(newUser.getFirstName(), response.jsonPath().getString("firstName"));
-        assertEquals(newUser.getLastName(), response.jsonPath().getString("lastName"));
-        assertEquals(newUser.getEmail(), response.jsonPath().getString("email"));
-        assertNotNull(response.jsonPath().getString("id"));
+                .statusCode(201)
+                .body("id", notNullValue())
+                .body("firstName", equalTo(newUser.getFirstName()))
+                .body("lastName", equalTo(newUser.getLastName()))
+                .body("email", equalTo(newUser.getEmail()));
     }
 }
