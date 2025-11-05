@@ -1,10 +1,12 @@
 package com.appsdeveloperblog.UsersServiceRESTAssured.ui;
 
 import com.appsdeveloperblog.UsersServiceRESTAssured.ui.model.User;
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MySQLContainer;
@@ -24,6 +26,15 @@ public class UsersControllerWithTestContainerITest {
     @Container
     @ServiceConnection
     static MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:9.2.0");
+
+    @LocalServerPort
+    private int port;
+
+    @BeforeAll
+    void setUp() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
+    }
 
     @Order(1)
     @Test
@@ -50,6 +61,7 @@ public class UsersControllerWithTestContainerITest {
                 .accept(ContentType.JSON) // longer syntax .header("Accept", "application/json")
                 .body(newUser)
         .when() // used to specify HTTP method and API endpoint that we want to call
+                .post("/users")
         .then(); // we verify HTTP response
         // Assert
     }
