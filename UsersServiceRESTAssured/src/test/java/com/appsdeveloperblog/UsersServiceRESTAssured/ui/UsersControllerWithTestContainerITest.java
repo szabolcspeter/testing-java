@@ -4,6 +4,7 @@ import com.appsdeveloperblog.UsersServiceRESTAssured.ui.model.User;
 import com.appsdeveloperblog.UsersServiceRESTAssured.ui.model.UserRest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -57,7 +58,7 @@ public class UsersControllerWithTestContainerITest {
 
         // Act
         // *** It uses Fluent API ***
-        UserRest createdUser = given() // setup HTTP details
+        Response response = given() // setup HTTP details
                 .contentType(ContentType.JSON) // longer syntax  .header("Content-Type", "application/json")
                 .accept(ContentType.JSON) // longer syntax .header("Accept", "application/json")
                 .body(newUser)
@@ -65,12 +66,13 @@ public class UsersControllerWithTestContainerITest {
                 .post("/users")
         .then() // we verify HTTP response
                 .extract()
-                .as(UserRest.class);
+                .response();
 
         // Assert
-        assertEquals(newUser.getFirstName(), createdUser.getFirstName());
-        assertEquals(newUser.getLastName(), createdUser.getLastName());
-        assertEquals(newUser.getEmail(), createdUser.getEmail());
-        assertNotNull(createdUser.getId());
+        assertEquals(201, response.statusCode());
+        assertEquals(newUser.getFirstName(), response.jsonPath().getString("firstName"));
+        assertEquals(newUser.getLastName(), response.jsonPath().getString("lastName"));
+        assertEquals(newUser.getEmail(), response.jsonPath().getString("email"));
+        assertNotNull(response.jsonPath().getString("id"));
     }
 }
