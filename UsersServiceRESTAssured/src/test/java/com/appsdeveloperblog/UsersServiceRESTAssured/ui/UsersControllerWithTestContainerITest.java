@@ -1,5 +1,6 @@
 package com.appsdeveloperblog.UsersServiceRESTAssured.ui;
 
+import com.appsdeveloperblog.UsersServiceRESTAssured.ui.model.User;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,12 +36,19 @@ public class UsersControllerWithTestContainerITest {
     void testCreateUser_whenValidDetailsProvided_returnsCreatedUser() {
 
         // Arrange
+        User newUser = new User(
+                "Szabi",
+                "Peter",
+                "test@test.com",
+                "123456789"
+        );
 
         // Act
         // *** It uses Fluent API ***
         given() // setup HTTP details
                 .contentType(ContentType.JSON) // longer syntax  .header("Content-Type", "application/json")
                 .accept(ContentType.JSON) // longer syntax .header("Accept", "application/json")
+                .body(newUser)
         .when() // used to specify HTTP method and API endpoint that we want to call
         .then(); // we verify HTTP response
         // Assert
