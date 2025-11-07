@@ -64,6 +64,7 @@ public class UsersControllerWithTestContainerITest {
                 .contentType(ContentType.JSON) // longer syntax  .header("Content-Type", "application/json")
                 .accept(ContentType.JSON) // longer syntax .header("Accept", "application/json")
                 .body(newUser)
+                .log().all()
         .when() // used to specify HTTP method and API endpoint that we want to call
                 .post("/users")
         .then() // we verify HTTP response
