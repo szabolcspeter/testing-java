@@ -3,6 +3,9 @@ package com.appsdeveloperblog.UsersServiceRESTAssured.ui;
 import com.appsdeveloperblog.UsersServiceRESTAssured.ui.model.User;
 import com.appsdeveloperblog.UsersServiceRESTAssured.ui.model.UserRest;
 import io.restassured.RestAssured;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
@@ -34,10 +37,17 @@ public class UsersControllerWithTestContainerITest {
     @LocalServerPort
     private int port;
 
+    // This was we log only Body and Headers and not else
+//    private final RequestLoggingFilter requestLoggingFilter = RequestLoggingFilter.with(LogDetail.BODY, LogDetail.HEADERS);
+    // This way we log everything
+    private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
+    private final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter();
+
     @BeforeAll
     void setUp() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
+        RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
     }
 
     @Order(1)
@@ -64,11 +74,9 @@ public class UsersControllerWithTestContainerITest {
                 .contentType(ContentType.JSON) // longer syntax  .header("Content-Type", "application/json")
                 .accept(ContentType.JSON) // longer syntax .header("Accept", "application/json")
                 .body(newUser)
-                .log().all()
         .when() // used to specify HTTP method and API endpoint that we want to call
                 .post("/users")
         .then() // we verify HTTP response
-                .log().all()
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("firstName", equalTo(newUser.getFirstName()))
