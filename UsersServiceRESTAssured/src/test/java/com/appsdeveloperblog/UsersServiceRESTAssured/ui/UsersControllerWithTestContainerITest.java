@@ -3,6 +3,7 @@ package com.appsdeveloperblog.UsersServiceRESTAssured.ui;
 import com.appsdeveloperblog.UsersServiceRESTAssured.ui.model.User;
 import com.appsdeveloperblog.UsersServiceRESTAssured.ui.model.UserRest;
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -48,6 +49,11 @@ public class UsersControllerWithTestContainerITest {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
         RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
+
+        RestAssured.requestSpecification = new RequestSpecBuilder()
+                .setContentType(ContentType.JSON)
+                .setAccept(ContentType.JSON)
+                .build();
     }
 
     @Order(1)
@@ -71,8 +77,6 @@ public class UsersControllerWithTestContainerITest {
         // Act
         // *** It uses Fluent API ***
         given() // setup HTTP details
-                .contentType(ContentType.JSON) // longer syntax  .header("Content-Type", "application/json")
-                .accept(ContentType.JSON) // longer syntax .header("Accept", "application/json")
                 .body(newUser)
         .when() // used to specify HTTP method and API endpoint that we want to call
                 .post("/users")
