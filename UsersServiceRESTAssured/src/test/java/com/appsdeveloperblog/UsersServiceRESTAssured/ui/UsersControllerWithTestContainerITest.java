@@ -15,10 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -37,6 +41,11 @@ public class UsersControllerWithTestContainerITest {
 
     @LocalServerPort
     private int port;
+
+    private final String TEST_EMAIL = "test@test.com";
+    private final String TEST_PASSWORD = "123456789";
+    private String userId;
+    private String token;
 
     // This was we log only Body and Headers and not else
 //    private final RequestLoggingFilter requestLoggingFilter = RequestLoggingFilter.with(LogDetail.BODY, LogDetail.HEADERS);
@@ -74,8 +83,8 @@ public class UsersControllerWithTestContainerITest {
         User newUser = new User(
                 "Szabi",
                 "Peter",
-                "test@test.com",
-                "123456789"
+                TEST_EMAIL,
+                TEST_PASSWORD
         );
 
         // Act
@@ -90,5 +99,27 @@ public class UsersControllerWithTestContainerITest {
                 .body("firstName", equalTo(newUser.getFirstName()))
                 .body("lastName", equalTo(newUser.getLastName()))
                 .body("email", equalTo(newUser.getEmail()));
+    }
+
+    @Order(3)
+    @Test
+    void testLogin_whenValidCredentialsProvided_returnsTokenAndUserIdHeaders() {
+        // Arrange
+        Map<String, String> credentials = new HashMap<>();
+        credentials.put("email", TEST_EMAIL);
+        credentials.put("password", TEST_PASSWORD);
+
+        // Act
+        Response response =
+                given().body(credentials)
+                .when().post("/login");
+
+        userId = response.header("userId");
+        token = response.header("token");
+
+        // Assert
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertNotNull(userId);
+        assertNotNull(token);
     }
 }
