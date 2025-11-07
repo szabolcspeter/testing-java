@@ -68,6 +68,7 @@ public class UsersControllerWithTestContainerITest {
         .when() // used to specify HTTP method and API endpoint that we want to call
                 .post("/users")
         .then() // we verify HTTP response
+                .log().all()
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("firstName", equalTo(newUser.getFirstName()))
