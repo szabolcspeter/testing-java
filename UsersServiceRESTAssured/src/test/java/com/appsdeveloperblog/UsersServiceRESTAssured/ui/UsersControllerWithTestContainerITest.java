@@ -122,4 +122,22 @@ public class UsersControllerWithTestContainerITest {
         assertNotNull(userId);
         assertNotNull(token);
     }
+
+    @Order(4)
+    @Test
+    void testGetUser_withValidAuthenticationToken_returnsUser() {
+
+        given() // Arrange
+                .pathParam("userId", userId)
+                // .header("Authorization", "Bearer " + token)
+                .auth().oauth2(token)
+        .when() // Act
+                .get("/users/{userId}")
+        .then() // Assert
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(userId))
+                .body("email", equalTo(TEST_EMAIL))
+                .body("firstName", notNullValue())
+                .body("lastName", notNullValue());
+    }
 }
