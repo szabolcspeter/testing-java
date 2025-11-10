@@ -140,4 +140,15 @@ public class UsersControllerWithTestContainerITest {
                 .body("firstName", notNullValue())
                 .body("lastName", notNullValue());
     }
+
+    @Test
+    @Order(5)
+    void testGetUser_withMissingAuthHeader_returnsForbidden() {
+        given()
+                .pathParam("userId", this.userId)
+                .when()
+                .get("/users/{userId}")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
 }
