@@ -151,4 +151,19 @@ public class UsersControllerWithTestContainerITest {
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
+
+    @Order(6)
+    @Test
+    void testGetUsers_withValidTokenAndQueryParams_returnsPaginatedUsersList() {
+
+        given()
+                .header("Authorization", "Bearer " + token)
+                .queryParam("page", 1)
+                .queryParam("limit", 10)
+        .when()
+                .get("/users")
+        .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("size()", equalTo(1));
+    }
 }
